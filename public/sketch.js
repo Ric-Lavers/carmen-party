@@ -3,6 +3,11 @@ let x, y, xSpeed, ySpeed, face, r, g, b;
 function preload() {
   face = loadImage("carmen-face.png");
 }
+function getRandomInt(min, max) {
+  min = Math.ceil(min);
+  max = Math.floor(max);
+  return Math.floor(Math.random() * (max - min + 1)) + min;
+}
 
 const getDistance = (a, b) =>
   Math.sqrt(a.x * a.x - b.x * b.x + a.y * a.y - b.y * b.y);
@@ -25,7 +30,7 @@ function setup() {
   const createPlayer = () => ({
     x: random(width - radius),
     y: random(height - radius),
-    radius: radius,
+    radius: getRandomInt(radius - 25, radius + 25),
     xSpeed: 7,
     ySpeed: 7,
   });
@@ -34,10 +39,10 @@ function setup() {
     players.push(createPlayer());
   }
 
-  console.log("_PLAYER_1_", players[0]);
-  console.log("_PLAYER_2_", players[1]);
-  console.log(getDistance(players[0], players[1]));
-  console.log(checkCirclesOverlap(players[0], players[1]));
+  // console.log("_PLAYER_1_", players[0]);
+  // console.log("_PLAYER_2_", players[1]);
+  // console.log(getDistance(players[0], players[1]));
+  // console.log(checkCirclesOverlap(players[0], players[1]));
 }
 
 function windowReradiusd() {
