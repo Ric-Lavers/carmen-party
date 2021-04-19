@@ -17,14 +17,7 @@ const checkCirclesOverlap = (a, b) => getDistance(a, b) <= a.radius + b.radius;
 const players = [];
 const radius = 70;
 function setup() {
-  // createCanvas(1600, 900);
   createCanvas(windowWidth, windowHeight);
-  // x = random(width - radius);
-  // y = random(height - radius);
-  // x2 = random(width - radius);
-  // y2 = random(height - radius);
-  // xSpeed = 7;
-  // ySpeed = 7;
 
   // Make this values random
   const createPlayer = () => ({
@@ -38,11 +31,6 @@ function setup() {
   for (let i = 0; i < 5; i++) {
     players.push(createPlayer());
   }
-
-  // console.log("_PLAYER_1_", players[0]);
-  // console.log("_PLAYER_2_", players[1]);
-  // console.log(getDistance(players[0], players[1]));
-  // console.log(checkCirclesOverlap(players[0], players[1]));
 }
 
 function windowReradiusd() {
