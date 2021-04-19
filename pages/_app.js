@@ -1,7 +1,9 @@
-import '../styles/globals.css'
+import "../styles/globals.css";
+import { setUp } from "../scripts/cloudinary";
 
 function MyApp({ Component, pageProps }) {
-  return <Component {...pageProps} />
+  setUp();
+  return <Component {...pageProps} />;
 }
 
-export default MyApp
+export default MyApp;
