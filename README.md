@@ -1,6 +1,6 @@
 # Carmen Party
 
-Carmen party is a fun collision party with all carmens coder friends bouncing off each other.
+Carmen party is a fun collision party with all Carmens coder friends bouncing off each other.
 
 ## TODO
 

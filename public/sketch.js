@@ -1,4 +1,4 @@
-let x, y, xSpeed, ySpeed, face, r, g, b;
+let face;
 
 function preload() {
   face = loadImage("carmen-face.png");
@@ -10,7 +10,7 @@ function getRandomInt(min, max) {
 }
 
 const getDistance = (a, b) =>
-  Math.sqrt(a.x * a.x - b.x * b.x + a.y * a.y - b.y * b.y);
+  Math.sqrt((a.x - b.x) * (a.x - b.x) + (a.y - b.y) * (a.y - b.y));
 
 const checkCirclesOverlap = (a, b) => getDistance(a, b) <= a.radius + b.radius;
 
@@ -28,95 +28,112 @@ function setup() {
     ySpeed: 7,
   });
 
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 3; i++) {
     players.push(createPlayer());
   }
+
+  // console.log("_PLAYER_1_", players[0]);
+  // console.log("_PLAYER_2_", players[1]);
+  // console.log(getDistance(players[0], players[1]));
+  // console.log(checkCirclesOverlap(players[0], players[1]));
 }
 
 function windowReradiusd() {
   reradiusCanvas(windowWidth, windowHeight);
 }
 
+const getNearestPlayerX = (player) => {
+  let minDistance = 999999999;
+  players.forEach((otherPlayer) => {
+    if (
+      player !== otherPlayer &&
+      checkCirclesOverlap(
+        { ...player, x: player.x + player.xSpeed },
+        otherPlayer
+      )
+    ) {
+      minDistance = Math.min(
+        Math.abs(player.x - otherPlayer.x) - player.radius - otherPlayer.radius,
+        minDistance
+      );
+    }
+  });
+  return minDistance;
+};
+
+const getNearestPlayerY = (player) => {
+  let minDistance = 999999999;
+  players.forEach((otherPlayer) => {
+    if (
+      player !== otherPlayer &&
+      checkCirclesOverlap(
+        { ...player, y: player.y + player.ySpeed },
+        otherPlayer
+      )
+    ) {
+      minDistance = Math.min(
+        Math.abs(player.y - otherPlayer.y) - player.radius - otherPlayer.radius,
+        minDistance
+      );
+    }
+  });
+  return minDistance;
+};
+
+const normalize = (value) => (value > 0 ? 1 : -1);
+
 function update() {
   players.forEach((player) => {
-    // Add your movement logic here for each player
-    player.x += player.xSpeed;
-    players.forEach((otherPlayer) => {
-      if (player !== otherPlayer && checkCirclesOverlap(player, otherPlayer)) {
-        player.x -= player.xSpeed;
-        player.xSpeed *= -1;
-      }
-    });
-    player.y += player.ySpeed;
-    players.forEach((otherPlayer) => {
-      if (player !== otherPlayer && checkCirclesOverlap(player, otherPlayer)) {
-        player.y -= player.ySpeed;
-        player.ySpeed *= -1;
-      }
-    });
+    const minDistanceX = getNearestPlayerX(player);
+    const xNormalized = normalize(player.xSpeed);
+    player.x +=
+      xNormalized * (Math.min(Math.abs(player.xSpeed), minDistanceX) - 0.1);
+
+    if (minDistanceX <= Math.abs(player.xSpeed)) {
+      player.xSpeed *= -1;
+    }
+
+    const minDistanceY = getNearestPlayerY(player);
+    const yNormalized = normalize(player.ySpeed);
+    player.y +=
+      yNormalized * (Math.min(Math.abs(player.ySpeed), minDistanceY) - 0.1);
+
+    if (minDistanceY <= Math.abs(player.ySpeed)) {
+      player.ySpeed *= -1;
+    }
   });
 
   players.forEach((player) => {
-    if (player.x + player.radius * 2 - 2 >= width) {
+    if (player.x + player.radius >= width) {
       player.xSpeed = -7;
-      player.x = width - player.radius * 2;
+      player.x = width - player.radius;
     }
-    if (player.x <= 0) {
+    if (player.x <= player.radius) {
       player.xSpeed = 7;
-      player.x = 0;
+      player.x = player.radius;
     }
-    if (player.y + player.radius * 2 - 2 >= height) {
+    if (player.y + player.radius >= height) {
       player.ySpeed = -7;
-      player.y = height - player.radius * 2;
+      player.y = height - player.radius;
     }
-    if (player.y <= 0) {
+    if (player.y <= player.radius) {
       player.ySpeed = 7;
-      player.y = 0;
+      player.y = player.radius;
     }
   });
-
-  // Add your collision logic here
-  // players.forEach((player) => {
-  //   players.forEach((otherPlayer) => {
-  //     // console.log(
-  //     //   "_CHECK_CIRCLES_OVERLAP_",
-  //     //   checkCirclesOverlap(player, otherPlayer)
-  //     // );
-  //     if (player !== otherPlayer && checkCirclesOverlap(player, otherPlayer)) {
-  //       //   console.log("_WUT_");
-  //       //   //   // Add logic for making the player change direction
-  //       //   player.xSpeed *= -1;
-  //       //   // player.x += player.xSpeed;
-  //       //   player.ySpeed *= -1;
-  //       //   // player.y += player.ySpeed;
-  //       // player.xSpeed = otherPlayer.xSpeed;
-  //       // player.ySpeed = otherPlayer.ySpeed;
-  //       // otherPlayer.xSpeed = player.xSpeed;
-  //       // otherPlayer.ySpeed = player.ySpeed;
-  //     }
-  //   });
-  // });
 }
 
 function draw() {
   update();
   background(0);
 
-  // circle(x, y, radius);
-
   players.forEach((player) => {
-    image(face, player.x, player.y, player.radius * 2, player.radius * 2);
+    image(
+      face,
+      player.x - player.radius,
+      player.y - player.radius,
+      player.radius * 2,
+      player.radius * 2
+    );
   });
-
-  // image(face, x, y, radius, radius);
-
-  // x = x + xSpeed;
-  // y = y + ySpeed;
-
-  // if (x + radius - 2 >= width || x <= 0) {
-  //   xSpeed = -xSpeed;
-  // }
-  // if (y + radius - 2 >= height || y <= 0) {
-  //   ySpeed = -ySpeed;
-  // }
 }
