@@ -1,5 +1,6 @@
 import Head from "next/head";
 import styles from "../styles/Home.module.css";
+// import sketch from "../scripts/sketch";
 
 export default function Home() {
   return (

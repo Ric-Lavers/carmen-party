@@ -1,7 +1,19 @@
 let face;
+let playersImgUrls = [];
 
-function preload() {
-  face = loadImage("carmen-face.png");
+const carmensFace =
+  "https://res.cloudinary.com/aeonknight/image/upload/c_scale,h_300,r_1000,w_300/v1618838008/carmen-party/carmen-face_lw2yo9.png";
+
+async function preload() {
+  await fetch("/api/cloudinary/carmens-friends")
+    .then((res) => res.json())
+    .then((data) => {
+      console.log(data);
+      playersImgUrls = data;
+      playersImgUrls.forEach((imgUrl) => {
+        players.push(createPlayer(imgUrl));
+      });
+    });
 }
 function getRandomInt(min, max) {
   min = Math.ceil(min);
@@ -16,21 +28,23 @@ const checkCirclesOverlap = (a, b) => getDistance(a, b) <= a.radius + b.radius;
 
 const players = [];
 const radius = 70;
+const createPlayer = (imgUrl) => ({
+  x: random(width - radius),
+  y: random(height - radius),
+  radius: getRandomInt(radius - 25, radius + 25),
+  xSpeed: 7,
+  ySpeed: 7,
+  face: loadImage(imgUrl),
+});
+
 function setup() {
   createCanvas(windowWidth, windowHeight);
 
   // Make this values random
-  const createPlayer = () => ({
-    x: random(width - radius),
-    y: random(height - radius),
-    radius: getRandomInt(radius - 25, radius + 25),
-    xSpeed: 7,
-    ySpeed: 7,
-  });
 
-  for (let i = 0; i < 3; i++) {
-    players.push(createPlayer());
-  }
+  // for (let i = 0; i < 3; i++) {
+  //   players.push(createPlayer(carmensFace));
+  // }
 
   // console.log("_PLAYER_1_", players[0]);
   // console.log("_PLAYER_2_", players[1]);
@@ -129,7 +143,7 @@ function draw() {
 
   players.forEach((player) => {
     image(
-      face,
+      player.face,
       player.x - player.radius,
       player.y - player.radius,
       player.radius * 2,
