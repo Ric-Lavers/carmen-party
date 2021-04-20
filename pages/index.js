@@ -10,8 +10,14 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      <main>
-        <button id="upload_widget">join the party</button>
+      <main className={styles.main}>
+        <button
+          title="add a image and we'll find the face and size it"
+          className={styles.joinParty}
+          id="upload_widget"
+        >
+          join the party
+        </button>
       </main>
     </div>
   );
